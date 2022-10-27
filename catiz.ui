@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="zoom_in">
     <property name="geometry">
      <rect>
-      <x>1100</x>
+      <x>1140</x>
       <y>40</y>
       <width>75</width>
       <height>23</height>
@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="zoom_out">
     <property name="geometry">
      <rect>
-      <x>1180</x>
+      <x>1220</x>
       <y>40</y>
       <width>75</width>
       <height>23</height>
@@ -51,19 +51,6 @@
     </property>
     <layout class="QGridLayout" name="gridLayout"/>
    </widget>
-   <widget class="QPushButton" name="set_center">
-    <property name="geometry">
-     <rect>
-      <x>1100</x>
-      <y>10</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Center</string>
-    </property>
-   </widget>
    <widget class="QTreeWidget" name="roles">
     <property name="geometry">
      <rect>
@@ -79,6 +66,76 @@
      </property>
     </column>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>10</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Training Mode:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="tranining_mode">
+    <property name="geometry">
+     <rect>
+      <x>1180</x>
+      <y>10</y>
+      <width>113</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>720</y>
+      <width>891</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Unmuted Equipment</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>881</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="equipment_status"/>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>660</y>
+      <width>391</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>GroupBox</string>
+    </property>
+    <widget class="QTextEdit" name="alerts">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>371</width>
+       <height>101</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -89,6 +146,12 @@
      <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuCACA">
+    <property name="title">
+     <string>CACA</string>
+    </property>
+   </widget>
+   <addaction name="menuCACA"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
