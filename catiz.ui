@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(0, 0, 75);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="zoom_in">
     <property name="geometry">
@@ -60,6 +63,10 @@
       <height>501</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 0);
+border-color: rgb(255, 0, 0);</string>
+    </property>
     <column>
      <property name="text">
       <string>Roles</string>
@@ -75,6 +82,9 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 0);</string>
+    </property>
     <property name="text">
      <string>Training Mode:</string>
     </property>
@@ -88,6 +98,9 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 0);</string>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
@@ -97,6 +110,9 @@
       <width>891</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 0);</string>
     </property>
     <property name="title">
      <string>Unmuted Equipment</string>
@@ -122,6 +138,9 @@
       <height>131</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 0);</string>
+    </property>
     <property name="title">
      <string>GroupBox</string>
     </property>
@@ -133,6 +152,9 @@
        <width>371</width>
        <height>101</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 255, 0);</string>
      </property>
     </widget>
    </widget>
@@ -146,12 +168,6 @@
      <height>26</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuCACA">
-    <property name="title">
-     <string>CACA</string>
-    </property>
-   </widget>
-   <addaction name="menuCACA"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

@@ -18,6 +18,7 @@ from matplotlib.figure import Figure
 from matplotlib import image
 from matplotlib import animation
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from pathlib import Path
 import pickle
 from messaging import Client, random_name
@@ -26,6 +27,15 @@ from functools import partial
 def size_of_box(bbox):
     polygon = box(*bbox)
     print(polygon.area)
+
+class Track(object):
+    def __init__(self, id, lat, lon):
+        self.id = id
+        self.lat = lat
+        self.lon = lon
+
+
+
 
 
 class MyCanvas(FigureCanvas):
@@ -42,6 +52,8 @@ class Catiz(QtWidgets.QMainWindow):
     mute_equipment_received = pyqtSignal(str, bool)
     add_alert_received = pyqtSignal(str)
     review_alerts_received = pyqtSignal()
+    create_track_received = pyqtSignal(float, float)
+
     def __init__(self):
         super(Catiz, self).__init__()
         self.ui = Ui_MainWindow()
@@ -68,6 +80,10 @@ class Catiz(QtWidgets.QMainWindow):
                         'COMPASS_ROSE','GEO','GRIDS','CLOSE_CONTROL_FILTER','OVERLAYS','SPECIAL_POINTS','IFF_DATA',
                         'GFCS_DISPLAY','LSD_CONFIGURATION','EW','SAM','SSM','EOSS','3DR','DLS','UAS','TLS']
         self.equipment = {x: False for x in ['GFCSC1', 'GFCSC2', 'R3D', 'CDL', 'EWR', 'EWC', 'IFF', 'TAS']}
+        self.tracks = []
+        self.track_file = 'tracks_caca.txt'
+        self.track_figures = None
+        self.next_track_id = 8001
         self.mqtt_client = Client('172.21.144.106', id=random_name(20))
         self.mqtt_client.on_message = self.on_message
         self.mqtt_client.subscribe_list(['role/assign', 'role/unassign',
@@ -78,7 +94,7 @@ class Catiz(QtWidgets.QMainWindow):
                                          'alerts/review', 'tracks/info', 'tracks/engaged',
                                          'tracks/break_engagement', 'tracks/list',
                                          ##interal use topics
-                                         'alerts/new'
+                                         'alerts/new', 'tracks/create', 'tracks/delete'
                                          ])
         self.mqtt_client.start()
         if Path(self.pickle_filename).exists():
@@ -110,6 +126,8 @@ class Catiz(QtWidgets.QMainWindow):
         window_groups = [self.windows[i*n:(i+1)*n] for i in range((len(self.windows) + n - 1) // n)]
         for index, wg in enumerate(window_groups):
             menu = self.ui.menubar.addMenu(f"Window Group {index}")
+            self.ui.menubar.setStyleSheet('QMenuBar{color: #ffff00;}')
+            menu.setStyleSheet('QMenu{color: #ffff00;}')
             for w in wg:
                 act = menu.addAction(w)
                 act.triggered.connect(partial(self.open_window, w))
@@ -124,6 +142,7 @@ class Catiz(QtWidgets.QMainWindow):
             chk = QCheckBox(self)
             chk.setObjectName(eq)
             chk.setText(eq)
+            chk.setStyleSheet('QCheckBox{ color: #ffff00;}')
             self.ui.equipment_status.addWidget(chk, row, col)
             self.set_equipment_status(eq, status)
             col += 1
@@ -133,7 +152,25 @@ class Catiz(QtWidgets.QMainWindow):
         self.mute_equipment_received.connect(self.set_equipment_status)
         self.add_alert_received.connect(self.add_alert)
         self.review_alerts_received.connect(self.clear_alerts)
-    # self.update_map()
+        self.create_track_received.connect(self.create_track)
+        self.ui.roles.setStyleSheet('QHeaderView::section{ background-color:00004b;}\n'
+                                    'QTreeWidget{color:#ffff00;}')
+
+        self.update_map()
+        with open(self.track_file, 'r') as track_f:
+            track_list = track_f.readlines()
+            track_id_index = 8001
+            for t in track_list:
+                lat, lon = t.split()
+                lat, lon = float(lat), float(lon)
+                my_track = Track(str(track_id_index), lat, lon)
+                self.tracks.append(my_track)
+                track_id_index += 1
+        lats = [t.lat for t in self.tracks]
+        lons = [t.lon for t in self.tracks]
+        x, y = self.map(lons, lats)
+        self.map.scatter(x, y)
+
 
     @pyqtSlot()
     def clear_alerts(self):
@@ -143,6 +180,19 @@ class Catiz(QtWidgets.QMainWindow):
     def add_alert(self, alert_text):
         self.ui.alerts.insertPlainText(f'{alert_text}\n')
 
+    @pyqtSlot(float, float)
+    def create_track(self, lat, lon):
+        print(f"create_track({lat}, {lon}) called")
+        t = Track(self.next_track_id, lat, lon)
+        print(f"created_track with id {t.id}")
+        self.next_track_id += 1
+        self.tracks.append(t)
+
+        x, y = self.map([t.lon for t in self.tracks],[t.lat for t in self.tracks])
+        self.map.scatter(x, y, zorder=10)
+        #for t in self.tracks:
+        #    tx, ty = self.map(t.lon, t.lat)
+        #    plt.text( tx-20, ty-20, str(t.id),zorder=10)
 
     def set_training_mode(self, active):
         training_text = active and "Active" or "Inactive"
@@ -192,6 +242,10 @@ class Catiz(QtWidgets.QMainWindow):
             self.add_alert_received.emit(message.payload.decode('utf-8'))
         elif message.topic == 'alerts/review':
             self.review_alerts_received.emit()
+        elif message.topic == 'tracks/create':
+            lat, lon = message.payload.decode('utf-8').split('_')
+            lat, lon = float(lat), float(lon)
+            self.create_track_received.emit(lat, lon)
 
 
         #elif message.topic == 'view/center':
