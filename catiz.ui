@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1305</width>
-    <height>845</height>
+    <width>1301</width>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,12 +164,27 @@ border-color: rgb(255, 0, 0);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1305</width>
+     <width>1301</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionTrakc_Info">
+   <property name="text">
+    <string>Trakc Info</string>
+   </property>
+  </action>
+  <action name="actionEngaged_Tracks">
+   <property name="text">
+    <string>Engaged Tracks</string>
+   </property>
+  </action>
+  <action name="actionEngage_Tracks">
+   <property name="text">
+    <string>Engage Tracks</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

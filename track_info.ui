@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>568</height>
+    <width>664</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,14 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>520</y>
+     <x>290</x>
+     <y>550</y>
      <width>341</width>
      <height>32</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 0);</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -32,37 +35,59 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QTableWidget" name="table">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>100</y>
-     <width>511</width>
-     <height>401</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="window_name">
-   <property name="geometry">
-    <rect>
-     <x>124</x>
-     <y>50</y>
-     <width>311</width>
-     <height>20</height>
+     <x>240</x>
+     <y>40</y>
+     <width>131</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">color: rgb(255, 255, 0);</string>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>TRACK INFO</string>
    </property>
-   <property name="textFormat">
-    <enum>Qt::RichText</enum>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>80</y>
+     <width>601</width>
+     <height>461</height>
+    </rect>
    </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
+   <column>
+    <property name="text">
+     <string>Track Id</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Lat</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Lon</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Type</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Engaged</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>

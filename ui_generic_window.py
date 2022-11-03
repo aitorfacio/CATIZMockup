@@ -14,7 +14,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(561, 577)
+        Dialog.resize(557, 568)
+        Dialog.setStyleSheet("background-color: rgb(0, 0, 75);")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setGeometry(QtCore.QRect(180, 520, 341, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -27,6 +28,7 @@ class Ui_Dialog(object):
         self.table.setRowCount(0)
         self.window_name = QtWidgets.QLabel(Dialog)
         self.window_name.setGeometry(QtCore.QRect(124, 50, 311, 20))
+        self.window_name.setStyleSheet("color: rgb(255, 255, 0);")
         self.window_name.setTextFormat(QtCore.Qt.RichText)
         self.window_name.setAlignment(QtCore.Qt.AlignCenter)
         self.window_name.setObjectName("window_name")

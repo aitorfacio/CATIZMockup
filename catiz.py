@@ -3,7 +3,9 @@ import sys
 from mpl_toolkits.basemap import Basemap
 from numpy import meshgrid
 
+from TracksByType import TracksByType
 from generic_window import GenericWindow
+from track_info import TrackInfo
 from ui_catiz import Ui_MainWindow
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSlot, pyqtSignal
@@ -29,10 +31,12 @@ def size_of_box(bbox):
     print(polygon.area)
 
 class Track(object):
-    def __init__(self, id, lat, lon):
+    def __init__(self, id, lat, lon, track_type="", engaged=False):
         self.id = id
         self.lat = lat
         self.lon = lon
+        self.type = track_type
+        self.engaged = engaged
 
 
 
@@ -53,6 +57,7 @@ class Catiz(QtWidgets.QMainWindow):
     add_alert_received = pyqtSignal(str)
     review_alerts_received = pyqtSignal()
     create_track_received = pyqtSignal(float, float)
+    track_list_requested = pyqtSignal()
 
     def __init__(self):
         super(Catiz, self).__init__()
@@ -82,6 +87,7 @@ class Catiz(QtWidgets.QMainWindow):
         self.equipment = {x: False for x in ['GFCSC1', 'GFCSC2', 'R3D', 'CDL', 'EWR', 'EWC', 'IFF', 'TAS']}
         self.tracks = []
         self.track_file = 'tracks_caca.txt'
+        self.track_sensors = ['Sonar', 'Radar', 'Manual', 'Simulated', 'Link', 'Weapon']
         self.track_figures = None
         self.next_track_id = 8001
         self.mqtt_client = Client('172.21.144.106', id=random_name(20))
@@ -117,9 +123,18 @@ class Catiz(QtWidgets.QMainWindow):
         self.radar_points = None
         self.radar_type = None
         self.show_info.connect(self.show_message)
+        self.track_info_window = None
+        self.track_by_type_window = None
         #for w in self.windows[:5]:
         #    self.ui.menubar.addMenu(w)
 
+
+        ## create Tracks Menu
+        tracks_menu = self.ui.menubar.addMenu("Tracks")
+        track_info_action = tracks_menu.addAction("Tracks Info")
+        track_info_action.triggered.connect(self.show_track_info)
+        tracks_by_type_action = tracks_menu.addAction("Tracks By Type")
+        tracks_by_type_action.triggered.connect(self.show_tracks_by_type)
         #k, m = divmod(len(self.windows), 5)
         n = 5
 #        window_groups = list(self.windows[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(len(self.windows)))
@@ -161,9 +176,9 @@ class Catiz(QtWidgets.QMainWindow):
             track_list = track_f.readlines()
             track_id_index = 8001
             for t in track_list:
-                lat, lon = t.split()
+                lat, lon, sensor = t.split()
                 lat, lon = float(lat), float(lon)
-                my_track = Track(str(track_id_index), lat, lon)
+                my_track = Track(str(track_id_index), lat, lon, track_type=sensor)
                 self.tracks.append(my_track)
                 track_id_index += 1
         lats = [t.lat for t in self.tracks]
@@ -171,6 +186,17 @@ class Catiz(QtWidgets.QMainWindow):
         x, y = self.map(lons, lats)
         self.map.scatter(x, y)
 
+        self.track_list_requested.connect(self.show_track_info)
+
+    @pyqtSlot()
+    def show_tracks_by_type(self):
+        self.track_by_type_window = TracksByType(self, self.tracks, self.track_sensors)
+        self.track_by_type_window.open()
+
+    @pyqtSlot()
+    def show_track_info(self):
+        self.track_info_window = TrackInfo(self, self.tracks)
+        self.track_info_window.open()
 
     @pyqtSlot()
     def clear_alerts(self):
@@ -246,6 +272,8 @@ class Catiz(QtWidgets.QMainWindow):
             lat, lon = message.payload.decode('utf-8').split('_')
             lat, lon = float(lat), float(lon)
             self.create_track_received.emit(lat, lon)
+        elif message.topic == 'tracks/list':
+            self.track_list_requested.emit()
 
 
         #elif message.topic == 'view/center':
